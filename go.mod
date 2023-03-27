@@ -2,7 +2,10 @@ module github.com/2751997nam/go-helpers
 
 go 1.19
 
-require github.com/gin-gonic/gin v1.9.0
+require (
+	github.com/gin-gonic/gin v1.9.0
+	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
+)
 
 require (
 	github.com/bytedance/sonic v1.8.0 // indirect
@@ -23,7 +26,6 @@ require (
 	github.com/ugorji/go/codec v1.2.9 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
-	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
