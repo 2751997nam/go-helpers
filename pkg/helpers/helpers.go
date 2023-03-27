@@ -150,6 +150,20 @@ func GetInput[T any](key string, data map[string]any, defaultValue T) T {
 	return defaultValue
 }
 
+func ArrayDiff[T comparable](left []T, right []T) (result []T) {
+	rightByValue := map[T]bool{}
+	for _, value := range right {
+		rightByValue[value] = true
+	}
+	for _, value := range left {
+		if _, ok := rightByValue[value]; !ok {
+			result = append(result, value)
+		}
+	}
+
+	return result
+}
+
 func ArrayUnique[T comparable](array []T) []T {
 	retVal := map[T]T{}
 
