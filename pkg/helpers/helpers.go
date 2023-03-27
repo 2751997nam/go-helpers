@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	"helpers/internal/types"
+	"github.com/2751997nam/go-helpers/internal/types"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/maps"

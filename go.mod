@@ -1,4 +1,4 @@
-module helpers
+module github.com/2751997nam/go-helpers
 
 go 1.19
 
