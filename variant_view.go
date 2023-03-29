@@ -1,4 +1,4 @@
-package types
+package main
 
 type VariantView struct {
 	ID     uint64       `json:"id"`

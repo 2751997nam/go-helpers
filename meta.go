@@ -1,4 +1,4 @@
-package types
+package main
 
 type Meta struct {
 	HasNext    bool  `json:"has_next"`

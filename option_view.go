@@ -1,4 +1,4 @@
-package types
+package main
 
 type OptionView struct {
 	ID   uint64 `json:"id"`

@@ -1,6 +1,7 @@
-package helpers
+package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,30 +11,32 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
-	"github.com/2751997nam/go-helpers/pkg/types"
-
+	"github.com/2751997nam/go-helpers/logs"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/maps"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func ResponseSuccess(c *gin.Context, result any, status int) {
-	c.JSON(status, types.Response{
+	c.JSON(status, Response{
 		Status: "successful",
 		Result: result,
 	})
 }
 
 func ResponseSuccessWithMessage(c *gin.Context, result any, message string) {
-	c.JSON(http.StatusOK, types.Response{
+	c.JSON(http.StatusOK, Response{
 		Status:  "successful",
 		Result:  result,
 		Message: message,
 	})
 }
 
-func ResponseWithMeta(c *gin.Context, result any, meta types.Meta) {
-	c.JSON(http.StatusOK, types.Response{
+func ResponseWithMeta(c *gin.Context, result any, meta Meta) {
+	c.JSON(http.StatusOK, Response{
 		Status: "successful",
 		Result: result,
 		Meta:   meta,
@@ -41,7 +44,7 @@ func ResponseWithMeta(c *gin.Context, result any, meta types.Meta) {
 }
 
 func ResponseFail(c *gin.Context, message string, status int) {
-	c.JSON(status, types.Response{
+	c.JSON(status, Response{
 		Status:  "fail",
 		Message: message,
 	})
@@ -190,9 +193,66 @@ func LogJson(prefix string, data any) {
 }
 
 func LogPanic(data any) {
+	QuickLog(map[string]any{"error": data}, "PANIC", "ERROR", "ERROR")
 	log.Panic(data)
 }
 
 func Log(data ...any) {
 	log.Println(data...)
+}
+
+func QuickLog(data any, fields ...any) {
+	logEntry := LogEntry{
+		Data: data,
+	}
+
+	if len(fields) > 0 {
+		logEntry.Target = fmt.Sprint(fields[0])
+	}
+	if len(fields) > 1 {
+		logEntry.Type = fmt.Sprint(fields[1])
+	}
+	if len(fields) > 2 {
+		logEntry.Action = fmt.Sprint(fields[2])
+	}
+	if len(fields) > 3 {
+		logEntry.Actor = fmt.Sprint(fields[3])
+	}
+
+	go LogViaGRPC(logEntry)
+}
+
+func LogViaGRPC(logEntry LogEntry) {
+	conn, err := grpc.Dial("logger-service:50001", grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	if err != nil {
+		log.Printf("ERROR Logging %v", err)
+	}
+
+	defer conn.Close()
+
+	c := logs.NewLogServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	logData := logs.Log{
+		Target: logEntry.Target,
+		Type:   logEntry.Type,
+		Action: logEntry.Action,
+		Actor:  logEntry.Actor,
+	}
+
+	data, err := json.Marshal(logEntry.Data)
+	if err != nil {
+		log.Printf("ERROR Logging %v", err)
+	} else {
+		logData.Data = string(data)
+		_, err = c.WriteLog(ctx, &logs.LogRequest{
+			LogEntry: &logData,
+		})
+
+		if err != nil {
+			log.Printf("ERROR Logging %v", err)
+		}
+	}
+
 }
