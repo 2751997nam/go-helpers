@@ -1,4 +1,4 @@
-package pkg
+package utils
 
 type LogEntry struct {
 	Target string `bson:"target,omitempty" json:"target,omitempty"`

@@ -1,4 +1,4 @@
-package pkg
+package utils
 
 type VariantView struct {
 	ID     uint64       `json:"id"`

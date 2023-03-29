@@ -1,4 +1,4 @@
-package pkg
+package utils
 
 type ProductSkuView struct {
 	ID uint64 `json:"id"`

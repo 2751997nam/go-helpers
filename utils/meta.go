@@ -1,4 +1,4 @@
-package pkg
+package utils
 
 type Meta struct {
 	HasNext    bool  `json:"has_next"`
