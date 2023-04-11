@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/2751997nam/go-helpers/logs"
+	"github.com/2751997nam/go-helpers/message"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/maps"
 	"google.golang.org/grpc"
@@ -255,4 +256,38 @@ func LogViaGRPC(logEntry LogEntry) {
 		}
 	}
 
+}
+
+func SendMessage(service string, messageType string, data any) (*message.MessageResponse, error) {
+	conn, err := grpc.Dial(fmt.Sprintf("%s-service:50001", service), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	if err != nil {
+		log.Printf("ERROR Send Message %v", err)
+		return nil, err
+	}
+
+	defer conn.Close()
+
+	c := message.NewMessageServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	msgData, err := json.Marshal(data)
+	if err != nil {
+		log.Printf("ERROR Send Message %v", err)
+		return nil, err
+	}
+
+	result, err := c.HandleMessage(ctx, &message.MessageRequest{
+		MessageEntry: &message.Message{
+			Type: messageType,
+			Data: msgData,
+		},
+	})
+
+	if err != nil {
+		log.Printf("ERROR Send Message %v", err)
+		return nil, err
+	}
+
+	return result, nil
 }
