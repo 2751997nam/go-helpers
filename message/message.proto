@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package message;
+
+option go_package = "/message";
+
+message Message {
+    string type = 1;
+    bytes data = 2;
+}
+
+message MessageRequest {
+    Message messageEntry = 1;
+}
+
+message MessageResponse {
+    string status = 1;
+    string message = 2;
+    bytes result = 3;
+}
+
+service MessageService {
+    rpc HandleMessage(MessageRequest) returns (MessageResponse);
+}
