@@ -148,6 +148,9 @@ func GetRequestData(c *gin.Context) (map[string]any, error) {
 func GetInput[T any](key string, data map[string]any, defaultValue T) T {
 	value, ok := data[key]
 	if ok {
+		if value == nil {
+			return defaultValue
+		}
 		return value.(T)
 	}
 
