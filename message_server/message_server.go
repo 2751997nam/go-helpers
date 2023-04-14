@@ -35,11 +35,9 @@ func (m *MessageServer) HandleMessage(ctx context.Context, req *message.MessageR
 		return res, err
 	}
 
-	for _, handle := range m.Router.Handles {
-		if handle.Url == input.Type && handle.Method == input.Method {
-			res, err := handle.Handle(data)
-			return &res, err
-		}
+	if handle, ok := m.Router.Handles[fmt.Sprintf("%s_%s", input.Type, input.Method)]; ok {
+		res, err := handle.Handle(data)
+		return &res, err
 	}
 
 	res := &message.MessageResponse{
