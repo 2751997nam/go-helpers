@@ -261,7 +261,15 @@ func LogViaGRPC(logEntry LogEntry) {
 
 }
 
-func SendMessage(service string, messageType string, data any) (*message.MessageResponse, error) {
+func GetMessageResponse(data any) (message.MessageResponse, error) {
+	bytes, err := json.Marshal(data)
+
+	return message.MessageResponse{
+		Result: bytes,
+	}, err
+}
+
+func SendMessage(service string, messageType string, messageMethod string, data any) (*message.MessageResponse, error) {
 	conn, err := grpc.Dial(fmt.Sprintf("%s-service:50001", service), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		log.Printf("ERROR Send Message %v", err)
@@ -282,8 +290,9 @@ func SendMessage(service string, messageType string, data any) (*message.Message
 
 	result, err := c.HandleMessage(ctx, &message.MessageRequest{
 		MessageEntry: &message.Message{
-			Type: messageType,
-			Data: msgData,
+			Type:   messageType,
+			Method: messageMethod,
+			Data:   msgData,
 		},
 	})
 
