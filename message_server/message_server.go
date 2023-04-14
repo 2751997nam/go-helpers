@@ -29,12 +29,12 @@ func (m *MessageServer) HandleMessage(ctx context.Context, req *message.MessageR
 		log.Println(err)
 		res := &message.MessageResponse{
 			Status:  "fail",
-			Message: "parse data error",
+			Message: "HandleMessage parse data error",
 		}
 
 		return res, err
 	}
-
+	log.Println("HandleMessage", fmt.Sprintf("%s_%s", input.Type, input.Method))
 	if handle, ok := m.Router.Handles[fmt.Sprintf("%s_%s", input.Type, input.Method)]; ok {
 		res, err := handle.Handle(data)
 		return &res, err
@@ -42,10 +42,10 @@ func (m *MessageServer) HandleMessage(ctx context.Context, req *message.MessageR
 
 	res := &message.MessageResponse{
 		Status:  "fail",
-		Message: "404 not found",
+		Message: "HandleMessage 404 not found",
 	}
 
-	return res, fmt.Errorf("404 not found")
+	return res, fmt.Errorf("HandleMessage 404 not found")
 }
 
 func GRPCListen(messageServer message.MessageServiceServer) {
