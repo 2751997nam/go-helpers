@@ -6,7 +6,8 @@ option go_package = "/message";
 
 message Message {
     string type = 1;
-    bytes data = 2;
+    string method = 2;
+    bytes data = 3;
 }
 
 message MessageRequest {

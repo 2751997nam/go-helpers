@@ -1,6 +1,8 @@
 package messageserver
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -13,6 +15,40 @@ import (
 const (
 	gRPCPort = "50001"
 )
+
+type MessageServer struct {
+	message.UnimplementedMessageServiceServer
+	Router MessageRouter
+}
+
+func (m *MessageServer) HandleMessage(ctx context.Context, req *message.MessageRequest) (*message.MessageResponse, error) {
+	input := req.GetMessageEntry()
+	data := map[string]any{}
+	err := json.Unmarshal([]byte(input.Data), &data)
+	if err != nil {
+		log.Println(err)
+		res := &message.MessageResponse{
+			Status:  "fail",
+			Message: "parse data error",
+		}
+
+		return res, err
+	}
+
+	for _, handle := range m.Router.Handles {
+		if handle.Url == input.Type && handle.Method == input.Method {
+			res, err := handle.Handle(data)
+			return &res, err
+		}
+	}
+
+	res := &message.MessageResponse{
+		Status:  "fail",
+		Message: "404 not found",
+	}
+
+	return res, fmt.Errorf("404 not found")
+}
 
 func GRPCListen(messageServer message.MessageServiceServer) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", gRPCPort))
