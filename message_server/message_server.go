@@ -29,23 +29,27 @@ func (m *MessageServer) HandleMessage(ctx context.Context, req *message.MessageR
 		log.Println(err)
 		res := &message.MessageResponse{
 			Status:  "fail",
-			Message: "HandleMessage parse data error",
+			Message: "parse data error",
 		}
 
 		return res, err
 	}
-	log.Println("HandleMessage", fmt.Sprintf("%s_%s", input.Type, input.Method))
-	if handle, ok := m.Router.Handles[fmt.Sprintf("%s_%s", input.Type, input.Method)]; ok {
+	handle, params := m.Router.GetRoute(input.Type, input.Method)
+	if handle != nil {
+		for key, value := range params {
+			data[key] = value
+		}
 		res, err := handle.Handle(data)
+
 		return &res, err
 	}
 
 	res := &message.MessageResponse{
 		Status:  "fail",
-		Message: "HandleMessage 404 not found",
+		Message: "404 not found",
 	}
 
-	return res, fmt.Errorf("HandleMessage 404 not found")
+	return res, fmt.Errorf("404 not found")
 }
 
 func GRPCListen(messageServer message.MessageServiceServer) {
