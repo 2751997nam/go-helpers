@@ -117,13 +117,15 @@ func GetUrlFields(url string) []string {
 }
 
 func GetRequestData(c *gin.Context) (map[string]any, error) {
-	var data map[string]any
-	bodyAsByteArray, err := io.ReadAll(c.Request.Body)
-	if err != nil {
-		return nil, err
-	}
-	if err = json.Unmarshal([]byte(bodyAsByteArray), &data); err != nil {
-		return nil, err
+	data := map[string]any{}
+	if c.Request.ContentLength > 0 {
+		bodyAsByteArray, err := io.ReadAll(c.Request.Body)
+		if err != nil {
+			return nil, err
+		}
+		if err = json.Unmarshal([]byte(bodyAsByteArray), &data); err != nil {
+			return nil, err
+		}
 	}
 
 	fields := GetUrlFields(c.FullPath())
@@ -139,7 +141,7 @@ func GetRequestData(c *gin.Context) (map[string]any, error) {
 
 	query := c.Request.URL.Query()
 	for field, value := range query {
-		data[field] = value
+		data[field] = value[0]
 	}
 
 	return data, nil

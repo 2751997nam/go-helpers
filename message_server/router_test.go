@@ -15,8 +15,9 @@ func TestGetRoute(t *testing.T) {
 		Handles: map[string]MessageHandle{},
 	}
 
+	router.GET("/find", handle)
+	router.GET("/", handle)
 	router.PUT("/:id", handle)
-	router.GET("/test/:id/oke", handle)
 
 	handle, params := router.GetRoute("/6438dcdfddecf5127e5832fe", "PUT")
 	log.Println("handle", handle)
