@@ -2,6 +2,7 @@ package messageserver
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	message "github.com/2751997nam/go-helpers/message"
@@ -53,10 +54,13 @@ func (r *MessageRouter) GetRoute(url string, method string) (*MessageHandle, map
 	}
 
 	for key, handle := range r.Handles {
+		log.Println("key", key)
 		if strings.Contains(key, ":") {
 			params := map[string]string{}
 			arr1 := strings.Split(key, "/")
+			log.Println("arr1", arr1)
 			arr2 := strings.Split(url, "/")
+			log.Println("arr2", arr2)
 			if len(arr1) == len(arr2) && len(arr1) > 0 {
 				for index := range arr1 {
 					if arr1[0:1][0] == ":" {
@@ -68,6 +72,7 @@ func (r *MessageRouter) GetRoute(url string, method string) (*MessageHandle, map
 			} else {
 				return nil, nil
 			}
+			log.Println("params", params)
 			return &handle, params
 		}
 	}
