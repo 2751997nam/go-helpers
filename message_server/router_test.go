@@ -19,7 +19,7 @@ func TestGetRoute(t *testing.T) {
 	router.GET("/", handle)
 	router.PUT("/:id", handle)
 
-	handle, params := router.GetRoute("/6438dcdfddecf5127e5832fe", "PUT")
+	handle, params := router.GetRoute("/6438dcdfddecf5127e5832fe", "GET")
 	log.Println("handle", handle)
 	log.Println("params", params)
 	if handle == nil {

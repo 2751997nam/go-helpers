@@ -54,8 +54,9 @@ func (r *MessageRouter) GetRoute(url string, method string) (*MessageHandle, map
 
 	for key, handle := range r.Handles {
 		index := strings.Index(key, "_")
+		imethod := key[index+1:]
 		key = key[0:index]
-		if strings.Contains(key, ":") {
+		if imethod == method && strings.Contains(key, ":") {
 			params := map[string]string{}
 			arr1 := strings.Split(strings.Trim(key, "/"), "/")
 			arr2 := strings.Split(strings.Trim(url, "/"), "/")
