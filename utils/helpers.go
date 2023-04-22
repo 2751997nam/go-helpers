@@ -305,3 +305,16 @@ func SendMessage(service string, messageType string, messageMethod string, data 
 
 	return result, nil
 }
+
+func ResponseMessage(response any) (message.MessageResponse, error) {
+	bytes, err := json.Marshal(response)
+
+	if err != nil {
+		return message.MessageResponse{
+			Message: err.Error(),
+		}, err
+	}
+	return message.MessageResponse{
+		Result: bytes,
+	}, nil
+}
