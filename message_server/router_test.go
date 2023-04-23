@@ -17,6 +17,7 @@ func TestGetRoute(t *testing.T) {
 
 	router.GET("/find", handle)
 	router.GET("/", handle)
+	router.GET("/show/:id", handle)
 	router.PUT("/:id", handle)
 
 	handle, params := router.GetRoute("/6438dcdfddecf5127e5832fe", "GET")
@@ -26,10 +27,17 @@ func TestGetRoute(t *testing.T) {
 		t.Errorf("handle is nil 1")
 	}
 
-	handle, params = router.GetRoute("/test/6438dcdfddecf5127e5832fe/oke", "GET")
+	handle, params = router.GetRoute("/show/12312", "GET")
 	log.Println("handle", handle)
 	log.Println("params", params)
 	if handle == nil {
 		t.Errorf("handle is nil 2")
+	}
+
+	handle, params = router.GetRoute("/test/6438dcdfddecf5127e5832fe/oke", "GET")
+	log.Println("handle", handle)
+	log.Println("params", params)
+	if handle == nil {
+		t.Errorf("handle is nil 3")
 	}
 }

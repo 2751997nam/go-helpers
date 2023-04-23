@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	message "github.com/2751997nam/go-helpers/message"
+	"github.com/2751997nam/go-helpers/utils"
 )
 
 type MessageFunc func(data map[string]any) (message.MessageResponse, error)
@@ -59,7 +60,9 @@ func (r *MessageRouter) GetRoute(url string, method string) (*MessageHandle, map
 		if imethod == method && strings.Contains(key, ":") {
 			params := map[string]string{}
 			arr1 := strings.Split(strings.Trim(key, "/"), "/")
+			utils.Log("arr1", arr1)
 			arr2 := strings.Split(strings.Trim(url, "/"), "/")
+			utils.Log("arr2", arr2)
 			if len(arr1) == len(arr2) && len(arr1) > 0 {
 				for index := range arr1 {
 					if arr1[index][0:1] == ":" {
