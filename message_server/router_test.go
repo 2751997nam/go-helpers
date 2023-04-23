@@ -20,6 +20,7 @@ func TestGetRoute(t *testing.T) {
 	router.GET("/:id", handle)
 	router.GET("/show/:id", handle)
 	router.GET("/view/:id", handle)
+	router.GET("/product_sku/:id", handle)
 	router.PUT("/:id", handle)
 
 	handle, params := router.GetRoute("/123123", "GET")
@@ -41,6 +42,13 @@ func TestGetRoute(t *testing.T) {
 	log.Println("params", params)
 	if handle == nil {
 		t.Errorf("handle is nil 2")
+	}
+
+	handle, params = router.GetRoute("/product_sku/2131869259", "GET")
+	log.Println("handle", handle)
+	log.Println("params", params)
+	if handle == nil {
+		t.Errorf("handle is nil 333s")
 	}
 
 	handle, params = router.GetRoute("/test/6438dcdfddecf5127e5832fe/oke", "GET")
