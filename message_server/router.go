@@ -2,10 +2,10 @@ package messageserver
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	message "github.com/2751997nam/go-helpers/message"
-	"github.com/2751997nam/go-helpers/utils"
 )
 
 type MessageFunc func(data map[string]any) (message.MessageResponse, error)
@@ -60,23 +60,42 @@ func (r *MessageRouter) GetRoute(url string, method string) (*MessageHandle, map
 		if imethod == method && strings.Contains(key, ":") {
 			params := map[string]string{}
 			arr1 := strings.Split(strings.Trim(key, "/"), "/")
-			utils.Log("arr1", arr1)
 			arr2 := strings.Split(strings.Trim(url, "/"), "/")
-			utils.Log("arr2", arr2)
-			if len(arr1) == len(arr2) && len(arr1) > 0 {
+			if len(arr1) == len(arr2) && len(arr1) > 0 && IsSameRoute(arr1, arr2) {
 				for index := range arr1 {
 					if arr1[index][0:1] == ":" {
 						params[arr1[index][1:]] = arr2[index]
 					} else if arr1[index] != arr2[index] {
-						return nil, nil
+						break
 					}
 				}
-			} else {
-				return nil, nil
+				return &handle, params
 			}
-			return &handle, params
 		}
 	}
 
 	return nil, nil
+}
+
+func IsSameRoute(keyArr, requestArr []string) bool {
+	for key := range keyArr {
+		if len(keyArr[key]) == 0 {
+			return false
+		}
+		if keyArr[key][0:1] == "*" || keyArr[key][0:1] == ":" {
+			if keyArr[key] == ":id" {
+				if _, err := strconv.ParseInt(requestArr[key], 10, 64); err == nil {
+					continue
+				} else {
+					return false
+				}
+			}
+			continue
+		}
+		if keyArr[key] != requestArr[key] {
+			return false
+		}
+	}
+
+	return true
 }
