@@ -318,3 +318,18 @@ func ResponseMessage(response any) (message.MessageResponse, error) {
 		Result: bytes,
 	}, nil
 }
+
+func ResponseCustomMessage(response Response) (message.MessageResponse, error) {
+	bytes, err := json.Marshal(response.Result)
+
+	if err != nil {
+		return message.MessageResponse{
+			Message: err.Error(),
+		}, err
+	}
+	return message.MessageResponse{
+		Result:  bytes,
+		Message: response.Message,
+		Status:  response.Status,
+	}, nil
+}
