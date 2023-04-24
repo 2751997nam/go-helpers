@@ -312,9 +312,11 @@ func ResponseMessage(response any) (message.MessageResponse, error) {
 	if err != nil {
 		return message.MessageResponse{
 			Message: err.Error(),
+			Status:  "fail",
 		}, err
 	}
 	return message.MessageResponse{
+		Status: "successful",
 		Result: bytes,
 	}, nil
 }
@@ -325,6 +327,7 @@ func ResponseCustomMessage(response Response) (message.MessageResponse, error) {
 	if err != nil {
 		return message.MessageResponse{
 			Message: err.Error(),
+			Status:  "fail",
 		}, err
 	}
 	return message.MessageResponse{
