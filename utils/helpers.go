@@ -66,7 +66,6 @@ func AnyToInt(value any) int {
 
 func AnyToUint(value any) uint64 {
 	result, _ := strconv.ParseInt(AnyToString(value), 10, 64)
-	fmt.Println("AnyToUint", value, uint64(result))
 	return uint64(result)
 }
 
@@ -335,4 +334,13 @@ func ResponseCustomMessage(response Response) (message.MessageResponse, error) {
 		Message: response.Message,
 		Status:  response.Status,
 	}, nil
+}
+
+func MissingRequiredKeys[T comparable](data map[T]any, keys []T) *T {
+	for _, key := range keys {
+		if _, ok := data[key]; !ok {
+			return &key
+		}
+	}
+	return nil
 }
