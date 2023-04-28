@@ -18,6 +18,8 @@ message MessageResponse {
     string status = 1;
     string message = 2;
     bytes result = 3;
+    bytes meta = 4;
+    int32 status_code = 5;
 }
 
 service MessageService {
