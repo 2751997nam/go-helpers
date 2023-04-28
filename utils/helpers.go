@@ -315,8 +315,9 @@ func ResponseMessage(response any) (message.MessageResponse, error) {
 		}, err
 	}
 	return message.MessageResponse{
-		Status: "successful",
-		Result: bytes,
+		Status:     "successful",
+		Result:     bytes,
+		StatusCode: 200,
 	}, nil
 }
 
@@ -325,15 +326,28 @@ func ResponseCustomMessage(response Response) (message.MessageResponse, error) {
 
 	if err != nil {
 		return message.MessageResponse{
-			Message: err.Error(),
-			Status:  "fail",
+			Message:    err.Error(),
+			Status:     "fail",
+			StatusCode: 500,
 		}, err
 	}
-	return message.MessageResponse{
-		Result:  bytes,
-		Message: response.Message,
-		Status:  response.Status,
-	}, nil
+
+	messageResponse := message.MessageResponse{
+		Result:     bytes,
+		Message:    response.Message,
+		Status:     response.Status,
+		StatusCode: response.StatusCode,
+	}
+
+	if response.Meta != nil {
+		metaBytes, err := json.Marshal(response.Result)
+
+		if err != nil {
+			messageResponse.Meta = metaBytes
+		}
+	}
+
+	return messageResponse, nil
 }
 
 func MissingRequiredKeys[T comparable](data map[T]any, keys []T) *T {
