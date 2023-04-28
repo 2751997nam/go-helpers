@@ -340,7 +340,7 @@ func ResponseCustomMessage(response Response) (message.MessageResponse, error) {
 	}
 
 	if response.Meta != nil {
-		metaBytes, err := json.Marshal(response.Result)
+		metaBytes, err := json.Marshal(response.Meta)
 
 		if err == nil {
 			messageResponse.Meta = metaBytes
