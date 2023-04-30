@@ -280,7 +280,7 @@ func SendMessage(service string, messageType string, messageMethod string, data 
 	defer conn.Close()
 
 	c := message.NewMessageServiceClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 
 	msgData, err := json.Marshal(data)
@@ -303,6 +303,36 @@ func SendMessage(service string, messageType string, messageMethod string, data 
 	}
 
 	return result, nil
+}
+
+func SendAsyncMessage(service string, messageType string, messageMethod string, data any) error {
+	conn, err := grpc.Dial(fmt.Sprintf("%s-service:50001", service), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	if err != nil {
+		log.Printf("ERROR Send Message %v", err)
+		return err
+	}
+	defer conn.Close()
+
+	msgData, err := json.Marshal(data)
+	if err != nil {
+		log.Printf("ERROR Send Message %v", err)
+		return err
+	}
+
+	c := message.NewMessageServiceClient(conn)
+	ctx := context.Background()
+
+	go func() {
+		c.HandleMessage(ctx, &message.MessageRequest{
+			MessageEntry: &message.Message{
+				Type:   messageType,
+				Method: messageMethod,
+				Data:   msgData,
+			},
+		})
+	}()
+
+	return nil
 }
 
 func ResponseMessage(response any) (message.MessageResponse, error) {
