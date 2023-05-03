@@ -51,40 +51,6 @@ func ResponseFail(c *gin.Context, message string, status int) {
 	})
 }
 
-func AnyToString(value any) string {
-	if value != nil {
-		return strings.Trim(fmt.Sprint(value), " ")
-	}
-
-	return ""
-}
-
-func AnyToInt(value any) int {
-	result, _ := strconv.Atoi(AnyToString(value))
-	return result
-}
-
-func AnyToUint(value any) uint64 {
-	result, _ := strconv.ParseInt(AnyToString(value), 10, 64)
-	return uint64(result)
-}
-
-func AnyFloat64ToUint64(value any) uint64 {
-	var result float64 = 0
-	if reflect.TypeOf(value).Name() == "string" {
-		result, _ = strconv.ParseFloat(AnyToString(value), 64)
-	} else {
-		result = value.(float64)
-	}
-
-	return uint64(result)
-}
-
-func AnyToFloat(value any) float32 {
-	result, _ := strconv.ParseFloat(AnyToString(value), 64)
-	return float32(result)
-}
-
 func ArrayChunk[T any](items []T, chunkSize int) (chunks [][]T) {
 	for chunkSize < len(items) {
 		items, chunks = items[chunkSize:], append(chunks, items[0:chunkSize:chunkSize])
@@ -101,8 +67,9 @@ func Join[T any](items []T, sep string) string {
 	return strings.Join(strs, sep)
 }
 
-func IsNumeric(str string) bool {
-	return regexp.MustCompile(`\d+`).MatchString(str)
+func IsNumeric(value any) bool {
+	valueType := reflect.TypeOf(value).String()
+	return strings.Contains(valueType, "int") || strings.Contains(valueType, "float") || strings.Contains(valueType, "complex")
 }
 
 func GetUrlFields(url string) []string {
