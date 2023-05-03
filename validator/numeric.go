@@ -19,5 +19,5 @@ func (v *ValidatorNumeric) IsValid(field string, data *map[string]any) bool {
 }
 
 func (v *ValidatorNumeric) GetErrorMessage(field string) string {
-	return fmt.Sprintf("%s is required", field)
+	return fmt.Sprintf("%s is must be a number", field)
 }

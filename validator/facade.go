@@ -32,6 +32,14 @@ func (v *ValidatorFacade) GetValiator(rule string) ValidatorInterface {
 		return &ValidatorNumeric{
 			Rule: rule,
 		}
+	case "email":
+		return &ValidatorEmail{
+			Rule: rule,
+		}
+	case "phone":
+		return &ValidatorPhone{
+			Rule: rule,
+		}
 	}
 	return nil
 }

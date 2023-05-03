@@ -72,6 +72,11 @@ func IsNumeric(value any) bool {
 	return strings.Contains(valueType, "int") || strings.Contains(valueType, "float") || strings.Contains(valueType, "complex")
 }
 
+func RegexReplace(pattern string, replaceStr string, str string) string {
+	rex := regexp.MustCompile(pattern)
+	return rex.ReplaceAllString(str, replaceStr)
+}
+
 func GetUrlFields(url string) []string {
 	retVal := []string{}
 	regex := *regexp.MustCompile(`\/:(\w+)($|\/)`)
