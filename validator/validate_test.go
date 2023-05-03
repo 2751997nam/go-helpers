@@ -10,7 +10,9 @@ func TestValidate(t *testing.T) {
 		"name":     "asdsd",
 		"price":    13.5,
 		"slug":     "xxxxx",
-		"quantity": 50,
+		"quantity": 20,
+		"email":    "rockman2996@gmail.com",
+		"phone":    "0977214760",
 	}
 
 	rules := map[string]string{
@@ -18,6 +20,8 @@ func TestValidate(t *testing.T) {
 		"price":    "required|numeric",
 		"slug":     "min:3",
 		"quantity": "required|min:10|max:20",
+		"phone":    "required|phone",
+		"email":    "required|email",
 	}
 
 	err := Validate(data, rules)
