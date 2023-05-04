@@ -68,7 +68,10 @@ func MapToStruct[T any](mapValue map[string]any, structValue *T) {
 	for key, value := range mapValue {
 		rex := regexp.MustCompile(`(\b|_)(\w)`)
 		field := rex.ReplaceAllStringFunc(key, func(str string) string {
-			return strings.ToUpper(string(str[0]))
+			if len(str) > 0 {
+				return strings.ToUpper(string(str[len(str)-1]))
+			}
+			return ""
 		})
 		structField := reflect.ValueOf(structValue).Elem().FieldByName(field)
 		if structField.IsValid() {
