@@ -73,6 +73,11 @@ func MapToStruct[T any](mapValue map[string]any, structValue *T) {
 			}
 			return ""
 		})
+
+		if strings.ToLower(field) == "id" {
+			field = "ID"
+		}
+
 		structField := reflect.ValueOf(structValue).Elem().FieldByName(field)
 		if structField.IsValid() {
 			val, _ := CastType(value, structField.Interface())
