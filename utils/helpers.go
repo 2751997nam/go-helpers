@@ -99,6 +99,10 @@ func GetRequestData(c *gin.Context) (map[string]any, error) {
 		}
 	}
 
+	if data == nil {
+		data = map[string]any{}
+	}
+
 	fields := GetUrlFields(c.FullPath())
 
 	for _, field := range fields {
