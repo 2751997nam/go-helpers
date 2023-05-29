@@ -11,7 +11,7 @@ for folder in ../*; do
             prefix=".."
             dir=${folder/#$prefix}
             echo $BASE_DIR$dir
-            cd $BASE_DIR$dir && go get github.com/2751997nam/go-helpers@master
+            cd $BASE_DIR$dir && go get github.com/2751997nam/go-helpers@master && go mod tidy
         fi
     fi
 done
