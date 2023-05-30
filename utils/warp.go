@@ -37,6 +37,6 @@ func GRPCWrapH(handle HandleFunc) ms.MessageFunc {
 		if res.StatusCode == 0 {
 			res.StatusCode = http.StatusOK
 		}
-		return ResponseMessage(res)
+		return ResponseCustomMessage(res)
 	}
 }
