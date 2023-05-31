@@ -42,7 +42,15 @@ func AnyToFloat(value any) float32 {
 	return float32(result)
 }
 
+func AnyToFloat64(value any) float64 {
+	result, _ := strconv.ParseFloat(AnyToString(value), 64)
+	return result
+}
+
 func CastType(a any, b any) (reflect.Value, error) {
+	if IsNumericString(a) {
+		a = AnyToFloat64(a)
+	}
 	// Get the type of variable b
 	bType := reflect.ValueOf(b).Type()
 
