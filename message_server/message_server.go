@@ -22,12 +22,6 @@ type MessageServer struct {
 }
 
 func (m *MessageServer) HandleMessage(ctx context.Context, req *message.MessageRequest) (*message.MessageResponse, error) {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Printf("r: %v\n", r)
-		}
-	}()
-
 	input := req.GetMessageEntry()
 	data := map[string]any{}
 	err := json.Unmarshal([]byte(input.Data), &data)
