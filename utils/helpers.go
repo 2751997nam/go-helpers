@@ -181,11 +181,6 @@ func LogJson(prefix string, data any) {
 	log.Println(prefix, string(str))
 }
 
-func LogPanic(data any) {
-	QuickLog(map[string]any{"error": data}, "PANIC", "ERROR", "ERROR")
-	log.Panic(data)
-}
-
 func Log(data ...any) {
 	log.Println(data...)
 }
