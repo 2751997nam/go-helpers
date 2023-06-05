@@ -24,6 +24,7 @@ type MessageServer struct {
 func (m *MessageServer) HandleMessage(ctx context.Context, req *message.MessageRequest) (*message.MessageResponse, error) {
 	defer func() (*message.MessageResponse, error) {
 		if r := recover(); r != nil {
+			log.Println("is recover")
 			return &message.MessageResponse{
 				Status:     "fail",
 				Message:    "recovered from the panic",
@@ -31,7 +32,11 @@ func (m *MessageServer) HandleMessage(ctx context.Context, req *message.MessageR
 			}, fmt.Errorf("recovered from the panic")
 		}
 
-		return nil, nil
+		return &message.MessageResponse{
+			Status:     "fail",
+			Message:    "recovered from the panic 2",
+			StatusCode: 500,
+		}, fmt.Errorf("recovered from the panic 2")
 	}()
 	input := req.GetMessageEntry()
 	data := map[string]any{}
